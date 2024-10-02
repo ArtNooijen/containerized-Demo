@@ -13,24 +13,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Set up Docker
-      uses: docker/setup-buildx-action@v1
-
     - name: Build Producer Docker image
-      run: |
-        docker build -t localhost:5000/producer:latest -f Dockerfile.producer .
-        docker tag localhost:5000/producer:latest localhost:5000/producer:latest
+      run: docker build -t producer:latest -f Dockerfile.producer .
 
     - name: Build Consumer Docker image
-      run: |
-        docker build -t localhost:5000/consumer:latest -f Dockerfile.consumer .
-        docker tag localhost:5000/consumer:latest localhost:5000/consumer:latest
-
-    - name: Push Producer Docker image to local registry
-      run: docker push localhost:5000/producer:latest
-
-    - name: Push Consumer Docker image to local registry
-      run: docker push localhost:5000/consumer:latest
+      run: docker build -t consumer:latest -f Dockerfile.consumer .
 
   deploy:
     needs: build
