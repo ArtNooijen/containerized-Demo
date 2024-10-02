@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
@@ -16,21 +16,24 @@ jobs:
     - name: Set up Docker
       uses: docker/setup-buildx-action@v1
 
+    - name: Log in to DockerHub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
     - name: Build Producer Docker image
       run: |
-        docker build -t localhost:5000/producer:latest -f Dockerfile.producer .
-        docker tag localhost:5000/producer:latest localhost:5000/producer:latest
+        docker build -t artofghost/producer:latest -f Dockerfile.producer .
+        docker tag artofghost/producer:latest artofghost/producer:latest
 
     - name: Build Consumer Docker image
       run: |
-        docker build -t localhost:5000/consumer:latest -f Dockerfile.consumer .
-        docker tag localhost:5000/consumer:latest localhost:5000/consumer:latest
+        docker build -t artofghost/consumer:latest -f Dockerfile.consumer .
+        docker tag artofghost/consumer:latest artofghost/consumer:latest
 
-    - name: Push Producer Docker image to local registry
-      run: docker push localhost:5000/producer:latest
+    - name: Push Producer Docker image to DockerHub
+      run: docker push artofghost/producer:latest
 
-    - name: Push Consumer Docker image to local registry
-      run: docker push localhost:5000/consumer:latest
+    - name: Push Consumer Docker image to DockerHub
+      run: docker push artofghost/consumer:latest
 
   deploy:
     needs: build
@@ -48,3 +51,4 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: kubectl apply -f rabbitmq-deployment.yaml
+
