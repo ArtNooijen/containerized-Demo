@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: producer
-        image: localhost:5000/producer:latest
+        image: artofghost/producer:latest
         ports:
         - containerPort: 5672
 
@@ -35,6 +35,6 @@ spec:
     spec:
       containers:
       - name: consumer
-        image: localhost:5000/consumer:latest
+        image: artofghost/consumer:latest
         ports:
         - containerPort: 5672
