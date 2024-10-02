@@ -49,6 +49,12 @@ jobs:
         chmod +x ./kubectl
         sudo mv ./kubectl /usr/local/bin/kubectl
 
-    - name: Deploy to Kubernetes
-      run: kubectl apply -f rabbitmq-deployment.yaml
+    - name: Set up Kubeconfig
+      run: |
+        # This assumes you already have access to the cluster
+        # For a remote cluster, you would need the kubeconfig setup here
+        echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f rabbitmq-deployment.yaml
